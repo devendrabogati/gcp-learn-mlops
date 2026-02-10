@@ -59,6 +59,7 @@ def load_model():
     model = pickle.load(open("xgboost_coupon_recommendation.pkl", "rb"))
     return model
 
+
 def preprocess(input_json):
     try:
         df = pd.DataFrame(input_json, index=[0])
