@@ -1,0 +1,31 @@
+steps:
+# 1. Build the image using the Artifact Registry path
+- name: 'gcr.io/cloud-builders/docker'
+  args: ['build', '-t', 'us-central1-docker.pkg.dev/learngcp-487007/python-apps/bank-campaign-model', '.']
+
+# 2. Push the image to Artifact Registry
+- name: 'gcr.io/cloud-builders/docker'
+  args: ['push', 'us-central1-docker.pkg.dev/learngcp-487007/python-apps/bank-campaign-model']
+
+# 3. Run pytest using the newly built image from Artifact Registry
+- name: 'us-central1-docker.pkg.dev/learngcp-487007/python-apps/bank-campaign-model'
+  entrypoint: 'bash'
+  args:
+   - '-c'
+   - |
+      python -m pytest
+
+# 4. Clone the repo (Unchanged)
+- name: 'gcr.io/cloud-builders/git'
+  args: ['clone', 'https://github.com/devendrabogati/gcp-learn-mlops.git']
+
+# 5. Copy file to GCS (Unchanged)
+- name: 'gcr.io/cloud-builders/gsutil'
+  args: ['cp', 'gcp-learn-mlops/bank_campaign_model_training.py', 'gs://us-central1-mlct-522465b2-bucket/dags']
+
+# 6. Specify the image to be stored in Artifact Registry
+images:
+- 'us-central1-docker.pkg.dev/learngcp-487007/python-apps/bank-campaign-model'
+
+options:
+  logging: CLOUD_LOGGING_ONLY
